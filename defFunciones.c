@@ -1,61 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "list.h"
 #include "defFunciones.h"
 
-const char *get_csv_field (char * tmp, int k) {
+const char *get_csv_field(char *tmp, int k)
+{
     int open_mark = 0;
-    char *ret = (char *) malloc (150 * sizeof(char));
+    char *ret = (char *)malloc(150 * sizeof(char));
     int ini_i = 0, i = 0, j = 0;
-    while(tmp[i+1] != '\0'){
+    while (tmp[i + 1] != '\0')
+    {
 
-        if(tmp[i] == '\"'){
+        if (tmp[i] == '\"')
+        {
             open_mark = 1 - open_mark;
-            if(open_mark) ini_i = i + 1;
+            if (open_mark)
+                ini_i = i + 1;
             i++;
             continue;
         }
 
-        if(open_mark || tmp[i] != ','){
-            if(k == j) ret[i-ini_i] = tmp[i];
+        if (open_mark || tmp[i] != ',')
+        {
+            if (k == j)
+                ret[i - ini_i] = tmp[i];
             i++;
             continue;
         }
 
-        if(tmp[i] == ','){
-            if(k == j) {
-               ret[i-ini_i] = 0;
-               return ret;
+        if (tmp[i] == ',')
+        {
+            if (k == j)
+            {
+                ret[i - ini_i] = 0;
+                return ret;
             }
-            j++; ini_i = i + 1;
+            j++;
+            ini_i = i + 1;
         }
         i++;
     }
 
-    if(k == j){
+    if (k == j)
+    {
 
         i = i - 1;
         for (i; tmp[i] != '\0'; i++)
         {
-            ret[i - ini_i] =  tmp[i];
+            ret[i - ini_i] = tmp[i];
         }
-       ret[i - ini_i] = 0;
-       return ret;
+        ret[i - ini_i] = 0;
+        return ret;
     }
     return NULL;
 }
 
-Biblioteca* crearBiblioteca()
+Biblioteca *crearBiblioteca()
 {
-    Biblioteca* biblioteca = (Biblioteca*)malloc(sizeof(Biblioteca));
+    Biblioteca *biblioteca = (Biblioteca *)malloc(sizeof(Biblioteca));
     biblioteca->cantidadListas = 0;
     biblioteca->ListaCanciones = createList();
     biblioteca->ListaGeneral = createList();
     return biblioteca;
 }
 
-void imprimirCancion(Cancion* a){
+void imprimirCancion(Cancion *a)
+{
     printf("------------------------------------------------\n");
 
     printf("Nombre : %s \n", a->Nombre);
@@ -67,7 +79,7 @@ void imprimirCancion(Cancion* a){
     return;
 }
 
-void ImprimirMenu(int op, int op2, Biblioteca* biblioteca)
+void ImprimirMenu(int op, int op2, Biblioteca *biblioteca)
 {
     printf("opcion 1. Agregar Cancion\n");
     printf("opcion 2. Buscar Cancion\n");
@@ -77,128 +89,133 @@ void ImprimirMenu(int op, int op2, Biblioteca* biblioteca)
     printf("opcion 6. Mostrar todas las Canciones\n");
     scanf("%d", &op);
 
-    switch(op)
+    switch (op)
     {
+    case 1:
+        printf("Función en proceso\n");
+        break;
+    case 2:
+        printf("opcion 1. Nombre\n");
+        printf("opcion 2. Artista\n");
+        printf("opcion 3. Genero\n");
+        scanf("%d", &op2);
+        switch (op2)
+        {
         case 1:
-            printf("Función en proceso\n");
-            break; 
+            printf("Ingrese el nombre: ");
+            BuscarPorNombre(biblioteca->ListaCanciones);
+            break;
         case 2:
-            printf("opcion 1. Nombre\n");
-            printf("opcion 2. Artista\n");
-            printf("opcion 3. Genero\n");
-            scanf("%d", &op2);
-            switch(op2)
-            {
-                case 1:
-                    printf("Ingrese el nombre: ");
-                    // BuscarPorNombre(General);
-                    break;
-                case 2:
-                    printf("Ingrese el artista: ");
-                    BuscarPorArtista(biblioteca -> ListaCanciones);
-                    break;
-                case 3:
-                    printf("Ingrese el genero: ");
-                    break;
-            }
+            printf("Ingrese el artista: ");
+            BuscarPorArtista(biblioteca->ListaCanciones);
             break;
         case 3:
-            printf("Función en proceso\n");
+            printf("Ingrese el genero: ");
+            BuscarPorGenero(biblioteca->ListaCanciones);
             break;
-        case 4:
-            printf("Función en proceso\n");
-            break;
-        case 5:
-            printf("Función en proceso\n");
-            break;
-        case 6:
-            printf("Función en proceso\n");
-            break;
+        }
+        break;
+    case 3:
+        printf("Función en proceso\n");
+        break;
+    case 4:
+        printf("Función en proceso\n");
+        break;
+    case 5:
+        printf("Función en proceso\n");
+        break;
+    case 6:
+        printf("Función en proceso\n");
+        break;
         break;
     }
 }
 
-void importar(FILE *archivo, Biblioteca* biblioteca)
+Cancion *crearCancion()
+{
+    Cancion *cancion = (Cancion *)malloc(sizeof(Cancion));
+    cancion->Artista = (char *)malloc(sizeof(char) * 35);
+    cancion->Genero = (char *)malloc(sizeof(char) * 35);
+    cancion->Nombre = (char *)malloc(sizeof(char) * 35);
+    cancion->year = (char *)malloc(sizeof(char) * 4);
+    cancion->NombreLista = (char *)malloc(sizeof(char) * 35);
+    return cancion;
+}
+
+void importar(FILE *archivo, Biblioteca *biblioteca)
 {
     int i;
-    //int k = 0;
+    // int k = 0;
     char linea[1024];
 
     while (fgets(linea, 1024, archivo) != NULL)
     {
         linea[strcspn(linea, "\n")] = 0;
-        Cancion* cancion = (Cancion *) malloc(sizeof(Cancion));
-        cancion->Artista = (char*) malloc(sizeof(char) * 35);
-        cancion->Genero = (char*) malloc(sizeof(char) * 35);
-        cancion->Nombre = (char*) malloc(sizeof(char) * 35);
-        cancion->year = (char*) malloc(sizeof(char) * 4);
-        cancion->NombreLista = (char*) malloc(sizeof(char) * 35);
+        Cancion *cancion = crearCancion();
 
         for (int i = 0; i < 5; i++)
         {
-            const char* aux = get_csv_field(linea, i);
+            const char *aux = get_csv_field(linea, i);
 
             switch (i)
             {
-                case 0:
-                    strcpy(cancion->Nombre, aux);
-                    break;
-                case 1:
-                    strcpy(cancion->Artista, aux); 
-                    break;
-                case 2:
-                    strcpy(cancion->Genero, aux);
-                    break;
-                case 3:
-                    strcpy(cancion->year, aux);
-                    break;
-                case 4:
-                    strcpy(cancion->NombreLista, aux);
-                    break;
+            case 0:
+                strcpy(cancion->Nombre, aux);
+                break;
+            case 1:
+                strcpy(cancion->Artista, aux);
+                break;
+            case 2:
+                strcpy(cancion->Genero, aux);
+                break;
+            case 3:
+                strcpy(cancion->year, aux);
+                break;
+            case 4:
+                strcpy(cancion->NombreLista, aux);
+                break;
             }
         }
 
         pushFront(biblioteca->ListaCanciones, cancion); // pushBack
 
-        Reproduccion* reproAux = existeReproduccion(biblioteca, cancion->NombreLista);
+        Reproduccion *reproAux = existeReproduccion(biblioteca, cancion->NombreLista);
         if (reproAux != NULL)
         {
-            //printf("Existe: %s", reproAux->NombreList);
+            // printf("Existe: %s", reproAux->NombreList);
             reproAux->cantidadCanciones += 1;
             pushFront(reproAux->ListaReprod, cancion);
         }
         else
         {
-            Reproduccion* repro = (Reproduccion *) malloc (sizeof(Reproduccion));
+            Reproduccion *repro = (Reproduccion *)malloc(sizeof(Reproduccion));
             repro->cantidadCanciones = 1;
             repro->ListaReprod = createList();
-            repro->NombreList = (char*)malloc(sizeof(char) * 35);
+            repro->NombreList = (char *)malloc(sizeof(char) * 35);
             strcpy(repro->NombreList, cancion->NombreLista);
             pushFront(repro->ListaReprod, cancion);
 
             pushFront(biblioteca->ListaGeneral, repro);
         }
 
-        //listaGlobal->cantidadCanciones += 1;
-        //if (k < 5) imprimirCancion(cancion);
-        //k++;
+        // listaGlobal->cantidadCanciones += 1;
+        // if (k < 5) imprimirCancion(cancion);
+        // k++;
     }
-    
+
     fclose(archivo);
-    //printf("Archivo importado!\n");
-    //return listGeneral;
+    // printf("Archivo importado!\n");
+    // return listGeneral;
 }
 
-
-
-Reproduccion* existeReproduccion(Biblioteca* biblioteca, char* nombreList)
+Reproduccion *existeReproduccion(Biblioteca *biblioteca, char *nombreList)
 {
-    Reproduccion* repro = firstList(biblioteca->ListaGeneral);
+    Reproduccion *repro = firstList(biblioteca->ListaGeneral);
     while (repro != NULL)
     {
         if (strcmp(repro->NombreList, nombreList) == 0)
         {
-            printf("* %s\n", repro->NombreList);
+            // printf("* %s\n", repro->NombreList);
             break;
         }
 
@@ -208,9 +225,9 @@ Reproduccion* existeReproduccion(Biblioteca* biblioteca, char* nombreList)
     return repro;
 }
 
-void mostrarReproduccion(Biblioteca* biblioteca, char* nombreLista)
+void mostrarReproduccion(Biblioteca *biblioteca, char *nombreLista)
 {
-    Reproduccion* repro = existeReproduccion(biblioteca, nombreLista);
+    Reproduccion *repro = existeReproduccion(biblioteca, nombreLista);
 
     if (repro == NULL)
         printf("NULL\n");
@@ -219,44 +236,39 @@ void mostrarReproduccion(Biblioteca* biblioteca, char* nombreLista)
     {
         printf("--- %s ---\n", nombreLista);
 
-        Cancion* cancion = (Cancion*)firstList(repro->ListaReprod);
+        Cancion *cancion = (Cancion *)firstList(repro->ListaReprod);
         while (cancion != NULL)
         {
             imprimirCancion(cancion);
 
-            //if (strcmp(cancion->Artista, nombreABuscar) == 0)
-            //    return cancion;
+            // if (strcmp(cancion->Artista, nombreABuscar) == 0)
+            //     return cancion;
 
-            cancion = (Cancion*)nextList(repro->ListaReprod);
+            cancion = (Cancion *)nextList(repro->ListaReprod);
         }
 
-        //mostrarCanciones(repro->ListaReprod);
+        // mostrarCanciones(repro->ListaReprod);
     }
 }
 
-void mostrarCanciones(List* listaCanciones)
+void mostrarCanciones(List *listaCanciones)
 {
-    //char* nombreABuscar;
+    // char* nombreABuscar;
 
-    Cancion* cancion = (Cancion*)firstList(listaCanciones);
+    Cancion *cancion = (Cancion *)firstList(listaCanciones);
     while (cancion != NULL)
     {
         imprimirCancion(cancion);
 
-        //if (strcmp(cancion->Artista, nombreABuscar) == 0)
-        //    return cancion;
+        // if (strcmp(cancion->Artista, nombreABuscar) == 0)
+        //     return cancion;
 
-        cancion = (Cancion*)nextList(listaCanciones);
+        cancion = (Cancion *)nextList(listaCanciones);
     }
 
-    //return NULL;
+    // return NULL;
 }
-
-
-/*void obtenerGeneros(List * genero, const char *dato){
-    printf("Aun no se crea esta funcion");
-}
-
+/*
 
 void LlenarLista(Biblioteca *listGeneral, char *linea)
 
@@ -282,51 +294,114 @@ void LlenarLista(Biblioteca *listGeneral, char *linea)
 void guardarLista(Biblioteca *lista, const char *atr)
 {
     printf("Aun no se crea esta funcion");
-}
+}*/
 
-/*
-void BuscarPorNombre(Biblioteca *lista, List* canciones){
-    char *cancionBuscada;
-    scanf("%s", cancionBuscada);
-    Canciones *cancion = firstList(canciones);
-    int flag = 0;
+// aun da error porque solo lee hasta el primer espacio
+void BuscarPorNombre(List *canciones)
+{
+    char *cancionBuscada = (char *)malloc(sizeof(char) * 35);
     
-    while(cancion != NULL){        
-        if(strcmp(cancion -> Nombre, cancionBuscada)==0){
-            printf("Nombre: %s", cancion -> Nombre);
-            printf("Artista: %s", cancion -> Artista);
-            printf("Genero: %s", cancion -> Genero);
-            printf("Año: %s", cancion -> year);
-            printf("Lista de: %s", cancion -> Lista);
-            flag = 1;            
+    getchar();
+    scanf("%[^\n]s", cancionBuscada);
+
+    Cancion *cancion = firstList(canciones);
+    int flag = 0;
+
+    while (cancion != NULL)
+    {
+        if (strcmp(cancion->Nombre, cancionBuscada) == 0)
+        {
+            imprimirCancion(cancion);
+            /*
+            printf("Nombre: %s", cancion->Nombre);
+            printf("Artista: %s", cancion->Artista);
+            printf("Genero: %s", cancion->Genero);
+            printf("Año: %s", cancion->year);
+            printf("Lista de: %s", cancion->NombreLista);
+            */
+            flag = 1;
             break;
         }
         cancion = nextList(canciones);
     }
+
     if (flag == 0)
+    {
+
         printf("La cancion buscada no se encuentra");
+    }
 }
-*/ 
 
-void BuscarPorArtista(List* listaCanciones){
-    char *art_buscado = (char *) malloc(sizeof(char) * 35); 
+// aun da error porque solo lee hasta el primer espacio
+void BuscarPorArtista(List *listaCanciones)
+{
+    char *art_buscado = (char *)malloc(sizeof(char) * 35);
     int k = 0;
-    scanf("%s", art_buscado);
+    getchar();
+    scanf("%[^\n]s", art_buscado); //%[^\n]s
 
-    Cancion* cancion = firstList(listaCanciones);
+    Cancion *cancion = firstList(listaCanciones);
 
-    while( cancion != NULL ){
-        if (strcmp(cancion-> Artista, art_buscado) == 0){
+    while (cancion != NULL)
+    {
+        if (strcmp(cancion->Artista, art_buscado) == 0)
+        {
             imprimirCancion(cancion);
             k = 1;
         }
-        cancion  = nextList(listaCanciones);
+        cancion = nextList(listaCanciones);
     }
 
-    if (k == 0) printf("No se encontro ninguna cancion de ''%s'.'\n" , art_buscado);
+    if (k == 0)
+        printf("\n No se encontro ninguna cancion de ''%s''\n", art_buscado);
 }
 
-void AgregarCancion(Biblioteca* biblioteca){
-    Cancion* c_ingresada = (Cancion*) malloc (sizeof(Cancion));
-    
+void BuscarPorGenero(List *canciones)
+{
+
+    char *generoBuscado = (char *)malloc(sizeof(char) * 35);
+    scanf("%s", generoBuscado);
+    Cancion *cancion = firstList(canciones);
+
+    while (cancion != NULL)
+    {
+        if (strstr(cancion->Genero, generoBuscado) != NULL)
+        {
+            imprimirCancion(cancion);
+        }
+        cancion = nextList(canciones);
+    }
+
+    // printf("El genero buscado no se encuentra");
+    /*
+     while(strcmp(cancion->Genero, generoBuscado)==0){
+         printf("Nombre: %s", cancion->nombre);
+         printf("Artista: %s", cancion->artista);
+         printf("Genero: %s", cancion->genero);
+         printf("Año: %s", cancion->year);
+         printf("Lista de: %s", cancion->listaDeListas);
+     }
+     if(cancion->Genero=NULL){
+         break;
+     }*/
 }
+
+/*
+void AgregarCancion(Biblioteca* biblioteca){
+    Cancion* c_ingresada = crearCancion();
+
+    printf("Introdusca el nombre de la cancion: \n");
+    scanf("%s", c_ingresada -> Nombre);
+    printf("Introdusca el artista o banda : \n");
+    scanf("%s", c_ingresada -> Artista);
+    printf("Introdusca el/los genero/s : \n");
+    scanf("%s", c_ingresada -> Genero);
+    printf("Introdusca el año de creacion : \n");
+    scanf("%s", c_ingresada -> year);
+    printf("¿A que lista le gustaria agregar esta cancion?");
+    scanf("%s", c_ingresada -> NombreLista);
+
+    if (cancionExixte(c_ingresada, biblioteca)= 1) printf("Esta cancion ya exite ");
+    else ingresarCancion((c_ingresada, biblioteca));
+}
+*/
