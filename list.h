@@ -1,7 +1,5 @@
-#ifndef LIST_H
-#define LIST_H
-
-// aquí se llaman.
+#ifndef List_h
+#define List_h
 
 typedef struct List List;
 
@@ -29,6 +27,6 @@ void * popCurrent(List * list);
 
 void cleanList(List * list);
 
-const char *get_csv_field (char *, int);
+#endif /* List_h */
 
-#endif
+

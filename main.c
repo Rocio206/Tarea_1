@@ -9,10 +9,7 @@
 
 int main()
 {
-    int opcion;
-    int opcion2;
-    //ImprimirMenu(opcion, opcion2);
-    
+    //importacion inicial
     FILE *archivo = fopen("Canciones.csv","r");
     if(archivo == NULL)
     {
@@ -20,20 +17,22 @@ int main()
         return(EXIT_FAILURE);
     }
 
-    //Biblioteca *General = crearBiblioteca();   // no recibe parámetros, porque retorna una lista, con la información ya dimensionada.
-    Reproduccion *lista_global = (Reproduccion *) malloc (sizeof(Reproduccion));
-    lista_global ->cantidadCanciones = 0;
-    lista_global -> ListaReprod = createList();
-    strcpy(lista_global -> NombreList , "Lista Global");
-
-    int a = 1;
-
-    while (a == 1)
-    {
-        importar(archivo, lista_global);
-        a = 0;
+    Biblioteca *biblioteca = crearBiblioteca();
+    importar(archivo, biblioteca);
+       // no recibe parámetros, porque retorna una lista, con la información ya dimensionada.
+    // Reproduccion *lista_global = (Reproduccion *) malloc (sizeof(Reproduccion));
+    // lista_global ->cantidadCanciones = 0;
+    // lista_global -> ListaReprod = createList();
+    // strcpy(lista_global -> NombreList , "Lista Global");
+    
+    
+    int opcion;
+    int opcion2;
+    ImprimirMenu(opcion, opcion2, biblioteca);
         
-    }
+    //mostrarCanciones(biblioteca->ListaCanciones);
+    //mostrarReproduccion(biblioteca, "Lista 1");
+    
 
     return 0;
 }
