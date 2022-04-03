@@ -296,7 +296,6 @@ void guardarLista(Biblioteca *lista, const char *atr)
     printf("Aun no se crea esta funcion");
 }*/
 
-// aun da error porque solo lee hasta el primer espacio
 void BuscarPorNombre(List *canciones)
 {
     char *cancionBuscada = (char *)malloc(sizeof(char) * 35);
@@ -332,7 +331,6 @@ void BuscarPorNombre(List *canciones)
     }
 }
 
-// aun da error porque solo lee hasta el primer espacio
 void BuscarPorArtista(List *listaCanciones)
 {
     char *art_buscado = (char *)malloc(sizeof(char) * 35);
