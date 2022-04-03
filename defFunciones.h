@@ -47,5 +47,8 @@ void BuscarPorGenero(List* canciones);
 void AgregarCancion(Biblioteca* biblioteca);
 int cancionExiste(char* buscada,List* canciones);
 
+void EliminarCancion(Biblioteca* biblioteca);
+
+
 
 #endif

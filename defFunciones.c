@@ -73,7 +73,7 @@ void imprimirCancion(Cancion *a)
     printf("Nombre : %s \n", a->Nombre);
     printf("Artista : %s \n", a->Artista);
     printf("Genero : %s \n", a->Genero);
-    printf("Anyo : %s \n", a->year);
+    printf("Año : %s \n", a->year);
     printf("Lista : %s \n", a->NombreLista);
 
     return;
@@ -116,7 +116,9 @@ void ImprimirMenu(int op, int op2, Biblioteca *biblioteca)
         }
         break;
     case 3:
-        printf("Función en proceso\n");
+        // eliminar cancion
+        EliminarCancion(biblioteca);
+
         break;
     case 4:
         printf("Función en proceso\n");
@@ -129,6 +131,54 @@ void ImprimirMenu(int op, int op2, Biblioteca *biblioteca)
 
         break;
     }
+}
+
+void EliminarCancion(Biblioteca *biblioteca)
+{
+    char *c_eliminada = (char *)malloc(sizeof(char) * 35);
+
+    printf("Introduzca el nombre de la cancion que desea eliminar\n");
+    getchar();
+    scanf("%[^\n]s", c_eliminada);
+    if (cancionExiste(c_eliminada, biblioteca->ListaCanciones))
+    {
+        // eliminar de lista de global y obtener nombre lista
+
+        Cancion *aux1 = crearCancion();
+        Cancion *aux2 = crearCancion();
+
+        aux1 = firstList(biblioteca->ListaCanciones);
+        while (aux1 != NULL)
+        {
+            if (strcmp(aux1->Nombre, c_eliminada) == 0)
+            {
+                popCurrent(biblioteca->ListaCanciones);
+                break;
+            }
+            aux1 = nextList(biblioteca->ListaCanciones);
+        }
+        // eliminar de su lista especifica
+        Reproduccion *reproAux = existeReproduccion(biblioteca, aux1->NombreLista);
+        if (reproAux != NULL)
+        {
+            aux2 = firstList(reproAux->ListaReprod);
+            while (aux2 != NULL)
+            {
+                if (strcmp(aux2->Nombre, c_eliminada) == 0)
+                {
+                    reproAux->cantidadCanciones -= 1;
+                    popCurrent(reproAux->ListaReprod);
+                    break;
+                }
+                aux2 = nextList(reproAux->ListaReprod);
+            }
+        }
+        else
+            printf("lista de reproduccion NO existe");
+    }
+
+    else
+        printf("Cancion que quiere eliminar no existe");
 }
 
 Cancion *crearCancion()
@@ -216,6 +266,7 @@ Reproduccion *existeReproduccion(Biblioteca *biblioteca, char *nombreList)
         if (strcmp(repro->NombreList, nombreList) == 0)
         {
             // printf("* %s\n", repro->NombreList);
+            return repro;
             break;
         }
 
