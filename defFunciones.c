@@ -92,7 +92,7 @@ void ImprimirMenu(int op, int op2, Biblioteca *biblioteca)
     switch (op)
     {
     case 1:
-        printf("Función en proceso\n");
+        AgregarCancion(biblioteca);
         break;
     case 2:
         printf("opcion 1. Nombre\n");
@@ -125,8 +125,8 @@ void ImprimirMenu(int op, int op2, Biblioteca *biblioteca)
         printf("Función en proceso\n");
         break;
     case 6:
-        printf("Función en proceso\n");
-        break;
+        mostrarCanciones(biblioteca->ListaCanciones);
+
         break;
     }
 }
@@ -253,20 +253,13 @@ void mostrarReproduccion(Biblioteca *biblioteca, char *nombreLista)
 
 void mostrarCanciones(List *listaCanciones)
 {
-    // char* nombreABuscar;
-
     Cancion *cancion = (Cancion *)firstList(listaCanciones);
     while (cancion != NULL)
     {
         imprimirCancion(cancion);
 
-        // if (strcmp(cancion->Artista, nombreABuscar) == 0)
-        //     return cancion;
-
-        cancion = (Cancion *)nextList(listaCanciones);
+        cancion = nextList(listaCanciones);
     }
-
-    // return NULL;
 }
 /*
 
@@ -299,7 +292,7 @@ void guardarLista(Biblioteca *lista, const char *atr)
 void BuscarPorNombre(List *canciones)
 {
     char *cancionBuscada = (char *)malloc(sizeof(char) * 35);
-    
+
     getchar();
     scanf("%[^\n]s", cancionBuscada);
 
@@ -384,22 +377,66 @@ void BuscarPorGenero(List *canciones)
      }*/
 }
 
-/*
-void AgregarCancion(Biblioteca* biblioteca){
-    Cancion* c_ingresada = crearCancion();
+void AgregarCancion(Biblioteca *biblioteca)
+{
+    Cancion *c_ingresada = crearCancion();
 
-    printf("Introdusca el nombre de la cancion: \n");
-    scanf("%s", c_ingresada -> Nombre);
-    printf("Introdusca el artista o banda : \n");
-    scanf("%s", c_ingresada -> Artista);
-    printf("Introdusca el/los genero/s : \n");
-    scanf("%s", c_ingresada -> Genero);
-    printf("Introdusca el año de creacion : \n");
-    scanf("%s", c_ingresada -> year);
-    printf("¿A que lista le gustaria agregar esta cancion?");
-    scanf("%s", c_ingresada -> NombreLista);
+    // ingreso
+    printf("Introduzca el nombre de la cancion: \n");
+    getchar();
+    scanf("%[^\n]s", c_ingresada->Nombre);
+    if (cancionExiste(c_ingresada->Nombre, biblioteca->ListaCanciones) == 0)
+    {
 
-    if (cancionExixte(c_ingresada, biblioteca)= 1) printf("Esta cancion ya exite ");
-    else ingresarCancion((c_ingresada, biblioteca));
+        printf("Introduzca el artista o banda : \n");
+        getchar();
+        scanf("%[^\n]s", c_ingresada->Artista);
+
+        printf("Introduzca el/los genero/s : \n");
+        getchar();
+        scanf("%[^\n]s", c_ingresada->Genero);
+
+        printf("Introduzca el año de creacion : \n");
+        getchar();
+        scanf("%[^\n]s", c_ingresada->year);
+
+        printf("¿A que lista le gustaria agregar esta cancion?\n");
+        getchar();
+        scanf("%[^\n]s", c_ingresada->NombreLista);
+
+        // ingreso a lista de cnciones
+        pushFront(biblioteca->ListaCanciones, c_ingresada);
+        // ingreso a su respectiva lista
+        Reproduccion *listaAux = existeReproduccion(biblioteca, c_ingresada->NombreLista);
+        if (listaAux != NULL)
+        { // si existe la lista
+            listaAux->cantidadCanciones += 1;
+            pushFront(listaAux->ListaReprod, c_ingresada);
+        }
+        else
+        {
+            Reproduccion *lista = (Reproduccion *)malloc(sizeof(Reproduccion));
+            lista->cantidadCanciones = 1;
+            lista->ListaReprod = createList();
+            lista->NombreList = (char *)malloc(sizeof(char) * 35);
+            strcpy(lista->NombreList, c_ingresada->NombreLista);
+            pushFront(lista->ListaReprod, c_ingresada);
+        }
+    }
+    else
+        printf("Ya existe una cancion con ese nombre");
 }
-*/
+
+int cancionExiste(char *c_buscada, List *listaCanciones)
+{
+
+    Cancion *aux = crearCancion();
+    aux = firstList(listaCanciones);
+    while (aux != 0)
+    {
+        if (strcmp(aux->Nombre, c_buscada) == 0)
+            return 1;
+        aux = nextList(listaCanciones);
+    }
+    return 0;
+}

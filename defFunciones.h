@@ -40,9 +40,12 @@ void obtenerGeneros(List * genero, const char *dato);
 // const char *get_csv_field (char * tmp, int k)
 
 void BuscarPorNombre(List* canciones);
-void BuscarPorArtista(List* listaCanciones);
+void BuscarPorArtista(List* canciones);
 void BuscarPorGenero(List* canciones);
+
+
 void AgregarCancion(Biblioteca* biblioteca);
+int cancionExiste(char* buscada,List* canciones);
 
 
 #endif

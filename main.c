@@ -19,11 +19,7 @@ int main()
 
     Biblioteca *biblioteca = crearBiblioteca();
     importar(archivo, biblioteca);
-       // no recibe parámetros, porque retorna una lista, con la información ya dimensionada.
-    // Reproduccion *lista_global = (Reproduccion *) malloc (sizeof(Reproduccion));
-    // lista_global ->cantidadCanciones = 0;
-    // lista_global -> ListaReprod = createList();
-    // strcpy(lista_global -> NombreList , "Lista Global");
+       
     
     
     int opcion;
